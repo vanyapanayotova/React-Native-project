@@ -51,7 +51,7 @@ export default function ItemDetailScreen({ route, navigation }) {
                     <Text style={styles.phone}>Phone: {currentItem.userPhone}</Text>
                 )}
                 <Text style={styles.timestamp}>
-                    {new Date(currentItem.timestamp).toLocaleString()}
+                    {new Date(currentItem.timestamp).toLocaleDateString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' })}
                 </Text>
             </View>
 
@@ -123,16 +123,20 @@ const styles = StyleSheet.create({
     },
     actions: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'flex-start',
     },
     actionButton: {
+        width: 100,
         padding: 10,
         backgroundColor: '#007AFF',
         borderRadius: 6,
+        alignItems: 'center',
+        marginRight: 10,
     },
     actionText: {
         color: '#fff',
         fontWeight: '600',
+        textAlign: 'center',
     },
     deleteButton: {
         backgroundColor: '#FF3B30',

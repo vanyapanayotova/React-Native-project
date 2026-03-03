@@ -15,7 +15,6 @@ export default function ItemCard({
     imageUri,
     isMyItem,
     onEdit,
-    onDelete,
     onPress,
 }) {
     const Container = onPress ? TouchableOpacity : View;
@@ -34,11 +33,11 @@ export default function ItemCard({
                 <Text style={styles.title}>{title}</Text>
                 {isMyItem && (
                     <View style={styles.actions}>
-                        <TouchableOpacity onPress={onEdit} style={styles.actionButton}>
+                        <TouchableOpacity
+                            onPress={onEdit}
+                            style={[styles.actionButton, { marginRight: 0 }]}
+                        >
                             <Text style={styles.actionText}>Edit</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={onDelete} style={[styles.actionButton, styles.deleteButton]}>
-                            <Text style={[styles.actionText, styles.deleteText]}>Delete</Text>
                         </TouchableOpacity>
                     </View>
                 )}
@@ -47,7 +46,7 @@ export default function ItemCard({
             <Text style={styles.price}>${price}</Text>
             <View style={styles.footer}>
                 <Text style={styles.userName}>{userName}</Text>
-                <Text style={styles.timestamp}>{new Date(timestamp).toLocaleString()}</Text>
+                <Text style={styles.timestamp}>{new Date(timestamp).toLocaleDateString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' })}</Text>
             </View>
         </Container>
     );
@@ -78,7 +77,6 @@ const styles = StyleSheet.create({
     },
     header: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
     },
     title: {
@@ -88,14 +86,17 @@ const styles = StyleSheet.create({
     },
     actions: {
         flexDirection: 'row',
-        gap: 8,
+        // push actions to the right edge
+        marginLeft: 'auto',
     },
     actionButton: {
         padding: 4,
+        alignItems: 'center',
     },
     actionText: {
         fontSize: 14,
         color: '#007AFF',
+        textAlign: 'center',
     },
     deleteButton: {},
     deleteText: {
