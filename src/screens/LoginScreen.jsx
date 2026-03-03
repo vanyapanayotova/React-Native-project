@@ -8,22 +8,27 @@ import {
 } from 'react-native';
 import { useUserContext } from '../contexts/user/UserContext';
 import axios from 'axios';
+import { useForm, Controller } from 'react-hook-form';
 
 export default function LoginScreen({
     navigation
 }) {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-
     const { login }  = useUserContext();
+    const {
+        control,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+    } = useForm({
+        defaultValues: { email: '', password: '' },
+    });
 
-    const loginHandler = () => {
+    const loginHandler = (data) => {
+        const { email, password } = data;
         axios.post(`${process.env.EXPO_PUBLIC_API_URL}/login`, {
             email,
             password,
         })
             .then(response => {
-                console.log('Login successful:', response.data);
                 const { accessToken, user } = response.data;
                 login(user, accessToken);
             })
@@ -38,24 +43,44 @@ export default function LoginScreen({
             <Text style={styles.title}>Marketplace</Text>
             <Text style={styles.subtitle}>Login to continue</Text>
 
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
+            <Controller
+                control={control}
+                name="email"
+                rules={{ required: true, pattern: /^[^@\s]+@[^@\s]+\.[^@\s]+$/ }}
+                render={({ field: { onChange, value } }) => (
+                    <TextInput
+                        style={[styles.input, errors.email && styles.invalid]}
+                        placeholder="Email"
+                        value={value}
+                        onChangeText={onChange}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                    />
+                )}
             />
+            {errors.email && <Text style={styles.errorText}>Valid email required</Text>}
 
-            <TextInput
-                style={styles.input}
-                placeholder="Password"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={true}
+            <Controller
+                control={control}
+                name="password"
+                rules={{ required: true, minLength: 6 }}
+                render={({ field: { onChange, value } }) => (
+                    <TextInput
+                        style={[styles.input, errors.password && styles.invalid]}
+                        placeholder="Password"
+                        value={value}
+                        onChangeText={onChange}
+                        secureTextEntry={true}
+                    />
+                )}
             />
+            {errors.password && <Text style={styles.errorText}>Password (min 6 chars)</Text>}
 
-            <TouchableOpacity style={styles.button} onPress={loginHandler}>
+            <TouchableOpacity
+                style={[styles.button, isSubmitting && styles.saveDisabled]}
+                onPress={handleSubmit(loginHandler)}
+                disabled={isSubmitting}
+            >
                 <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
 
@@ -117,5 +142,16 @@ const styles = StyleSheet.create({
     linkText: {
         color: '#007AFF',
         fontSize: 16,
+    },
+    invalid: {
+        borderColor: '#FF3B30',
+        borderWidth: 1,
+    },
+    errorText: {
+        color: '#FF3B30',
+        marginBottom: 8,
+    },
+    saveDisabled: {
+        backgroundColor: '#ccc',
     },
 });

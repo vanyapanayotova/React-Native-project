@@ -3,6 +3,7 @@ import {
     Text,
     TouchableOpacity,
     StyleSheet,
+    Image,
 } from 'react-native';
 
 export default function ItemCard({
@@ -11,17 +12,24 @@ export default function ItemCard({
     price,
     userName,
     timestamp,
+    imageUri,
     isMyItem,
     onEdit,
     onDelete,
+    onPress,
 }) {
+    const Container = onPress ? TouchableOpacity : View;
+    const containerProps = onPress ? { onPress } : {};
+
     return (
-        <View
+        <Container
             style={[
                 styles.cardContainer,
                 isMyItem ? styles.myCard : styles.otherCard,
             ]}
+            {...containerProps}
         >
+            {imageUri && <Image source={{ uri: imageUri }} style={styles.cardImage} />}
             <View style={styles.header}>
                 <Text style={styles.title}>{title}</Text>
                 {isMyItem && (
@@ -41,7 +49,7 @@ export default function ItemCard({
                 <Text style={styles.userName}>{userName}</Text>
                 <Text style={styles.timestamp}>{new Date(timestamp).toLocaleString()}</Text>
             </View>
-        </View>
+        </Container>
     );
 }
 
@@ -55,6 +63,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderWidth: 1,
         borderColor: '#e0e0e0',
+    },
+    cardImage: {
+        width: '100%',
+        height: 150,
+        borderRadius: 8,
+        marginBottom: 10,
     },
     myCard: {
         borderColor: '#007AFF',

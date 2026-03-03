@@ -9,21 +9,28 @@ import {
     Alert
 } from 'react-native';
 import { useUserContext } from '../contexts/user/UserContext';
+import { useForm, Controller } from 'react-hook-form';
 
 export default function RegisterScreen({
     navigation,
 }) {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
     const { login } = useUserContext();
+    const {
+        control,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+        watch,
+    } = useForm({
+        defaultValues: { name: '', email: '', password: '', confirmPassword: '' },
+    });
 
-    const registerHandler = () => {
+    const passwordValue = watch('password');
+
+    const registerHandler = (data) => {
+        const { name, email, password, confirmPassword } = data;
         if (password !== confirmPassword) {
-            return alert('Password Missmatch');
+            return Alert.alert('Password mismatch');
         }
-
         axios.post(`${process.env.EXPO_PUBLIC_API_URL}/register`, {
             name,
             email,
@@ -47,40 +54,81 @@ export default function RegisterScreen({
             <Text style={styles.title}>Create Account</Text>
             <Text style={styles.subtitle}>Join the Marketplace</Text>
 
-            <TextInput
-                style={styles.input}
-                placeholder="Name"
-                value={name}
-                onChangeText={setName}
-                autoCapitalize="words"
+            <Controller
+                control={control}
+                name="name"
+                rules={{ required: true }}
+                render={({ field: { onChange, value } }) => (
+                    <TextInput
+                        style={[styles.input, errors.name && styles.invalid]}
+                        placeholder="Name"
+                        value={value}
+                        onChangeText={onChange}
+                        autoCapitalize="words"
+                    />
+                )}
             />
+            {errors.name && <Text style={styles.errorText}>Name is required</Text>}
 
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
+            <Controller
+                control={control}
+                name="email"
+                rules={{ required: true, pattern: /^[^@\s]+@[^@\s]+\.[^@\s]+$/ }}
+                render={({ field: { onChange, value } }) => (
+                    <TextInput
+                        style={[styles.input, errors.email && styles.invalid]}
+                        placeholder="Email"
+                        value={value}
+                        onChangeText={onChange}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                    />
+                )}
             />
+            {errors.email && <Text style={styles.errorText}>Valid email required</Text>}
 
-            <TextInput
-                style={styles.input}
-                placeholder="Password"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={true}
+            <Controller
+                control={control}
+                name="password"
+                rules={{ required: true, minLength: 6 }}
+                render={({ field: { onChange, value } }) => (
+                    <TextInput
+                        style={[styles.input, errors.password && styles.invalid]}
+                        placeholder="Password"
+                        value={value}
+                        onChangeText={onChange}
+                        secureTextEntry={true}
+                    />
+                )}
             />
+            {errors.password && <Text style={styles.errorText}>Password (min 6 chars)</Text>}
 
-            <TextInput
-                style={styles.input}
-                placeholder="Confirm Password"
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                secureTextEntry={true}
+            <Controller
+                control={control}
+                name="confirmPassword"
+                rules={{
+                    required: true,
+                    validate: (v) => v === passwordValue || 'Passwords do not match',
+                }}
+                render={({ field: { onChange, value } }) => (
+                    <TextInput
+                        style={[styles.input, errors.confirmPassword && styles.invalid]}
+                        placeholder="Confirm Password"
+                        value={value}
+                        onChangeText={onChange}
+                        secureTextEntry={true}
+                    />
+                )}
             />
+            {errors.confirmPassword && (
+                <Text style={styles.errorText}>{errors.confirmPassword.message || 'Confirmation required'}</Text>
+            )}
 
-            <TouchableOpacity style={styles.button} onPress={registerHandler}>
+            <TouchableOpacity
+                style={[styles.button, isSubmitting && styles.saveDisabled]}
+                onPress={handleSubmit(registerHandler)}
+                disabled={isSubmitting}
+            >
                 <Text style={styles.buttonText}>Register</Text>
             </TouchableOpacity>
 
@@ -142,5 +190,16 @@ const styles = StyleSheet.create({
     linkText: {
         color: '#007AFF',
         fontSize: 16,
+    },
+    invalid: {
+        borderColor: '#FF3B30',
+        borderWidth: 1,
+    },
+    errorText: {
+        color: '#FF3B30',
+        marginBottom: 8,
+    },
+    saveDisabled: {
+        backgroundColor: '#ccc',
     },
 });
