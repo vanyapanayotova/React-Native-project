@@ -19,15 +19,27 @@ export default function ItemsListScreen({ navigation }) {
     const [error, setError] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
 
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const PAGE_SIZE = 5;
+
     const { user } = useUserContext();
 
     const loadItems = useCallback(() => {
         setLoading(true);
         setError(null);
         axios
-            .get(`${process.env.EXPO_PUBLIC_API_URL}/items`)
+            .get(`${process.env.EXPO_PUBLIC_API_URL}/items`, {
+                params: {
+                    _page: page,
+                    _limit: PAGE_SIZE,
+                },
+            })
             .then((response) => {
-                setItems(response.data);
+                const fetched = response.data;
+                // if less than page size, no more
+                setHasMore(fetched.length === PAGE_SIZE);
+                setItems(fetched);
             })
             .catch((err) => {
                 console.error('Failed to load items', err);
@@ -37,7 +49,7 @@ export default function ItemsListScreen({ navigation }) {
                 setLoading(false);
                 setRefreshing(false);
             });
-    }, []);
+    }, [page]);
 
     useEffect(() => {
         loadItems();
@@ -111,6 +123,25 @@ export default function ItemsListScreen({ navigation }) {
                             <Text style={styles.emptyText}>No items yet.</Text>
                         </View>
                     )}
+                    ListFooterComponent={() => (
+                        <View style={styles.pagination}>
+                            <TouchableOpacity
+                                disabled={page === 1}
+                                onPress={() => setPage((p) => Math.max(1, p - 1))}
+                                style={[styles.pageButton, page === 1 && styles.disabledButton]}
+                            >
+                                <Text style={styles.pageText}>Previous</Text>
+                            </TouchableOpacity>
+                            <Text style={styles.pageInfo}>Page {page}</Text>
+                            <TouchableOpacity
+                                disabled={!hasMore}
+                                onPress={() => setPage((p) => p + 1)}
+                                style={[styles.pageButton, !hasMore && styles.disabledButton]}
+                            >
+                                <Text style={styles.pageText}>Next</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
                 />
             )}
         </View>
@@ -141,5 +172,26 @@ const styles = StyleSheet.create({
     linkText: {
         color: '#007AFF',
         textDecorationLine: 'underline',
+    },
+    pagination: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 10,
+    },
+    pageButton: {
+        padding: 8,
+        backgroundColor: '#007AFF',
+        borderRadius: 6,
+    },
+    disabledButton: {
+        backgroundColor: '#ccc',
+    },
+    pageText: {
+        color: '#fff',
+        fontWeight: '600',
+    },
+    pageInfo: {
+        fontSize: 16,
     },
 });
