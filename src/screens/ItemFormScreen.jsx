@@ -34,16 +34,13 @@ export default function ItemFormScreen({ route, navigation }) {
             title: item?.title || '',
             description: item?.description || '',
             price: item ? String(item.price) : '',
-            isFeatured: item?.isFeatured || false,
-            availableUntil: item ? new Date(item.availableUntil) : new Date(),
         },
     });
 
     const [imageUri, setImageUri] = useState(item?.imageUri || null);
-    const [showDatePicker, setShowDatePicker] = useState(false);
+    // removed date picker state
 
-    // keep a local date state for display
-    const availableUntilDate = watch('availableUntil');
+    // removed availableUntil watch
 
     useEffect(() => {
         if (item) {
@@ -51,9 +48,7 @@ export default function ItemFormScreen({ route, navigation }) {
                 title: item.title,
                 description: item.description,
                 price: String(item.price),
-                isFeatured: item.isFeatured || false,
-                availableUntil: item.availableUntil ? new Date(item.availableUntil) : new Date(),
-            });
+                });
             // ensure photo is shown when editing existing item
             setImageUri(item.imageUri || null);
         }
@@ -91,8 +86,6 @@ export default function ItemFormScreen({ route, navigation }) {
             userId: user.id,
             userName: user.name,
             timestamp: item ? item.timestamp : new Date().toISOString(),
-            isFeatured: data.isFeatured,
-            availableUntil: data.availableUntil.toISOString(),
             imageUri,
         };
 
@@ -170,40 +163,7 @@ export default function ItemFormScreen({ route, navigation }) {
             />
             {errors.price && <Text style={styles.errorText}>Valid price required.</Text>}
 
-            <View style={styles.switchRow}>
-                <Text>Featured</Text>
-                <Controller
-                    control={control}
-                    name="isFeatured"
-                    render={({ field: { onChange, value } }) => (
-                        <Switch value={value} onValueChange={onChange} />
-                    )}
-                />
-            </View>
 
-            <View style={styles.dateRow}>
-                <Text>Available until:</Text>
-                <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-                    <Text style={styles.dateText}>
-                        {availableUntilDate
-                            ? new Date(availableUntilDate).toLocaleDateString()
-                            : new Date().toLocaleDateString()}
-                    </Text>
-                </TouchableOpacity>
-            </View>
-            {showDatePicker && (
-                <DateTimePicker
-                    value={availableUntilDate ? new Date(availableUntilDate) : new Date()}
-                    mode="date"
-                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                    onChange={(event, selected) => {
-                        setShowDatePicker(false);
-                        if (selected) {
-                            setValue('availableUntil', selected);
-                        }
-                    }}
-                />
-            )}
 
             <TouchableOpacity style={styles.imageButton} onPress={pickImage}>
                 <Text style={styles.imageButtonText}>{imageUri ? 'Change Photo' : 'Pick Photo'}</Text>
@@ -250,15 +210,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 10,
-    },
-    dateRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 10,
-    },
-    dateText: {
-        color: '#007AFF',
     },
     imageButton: {
         backgroundColor: '#007AFF',

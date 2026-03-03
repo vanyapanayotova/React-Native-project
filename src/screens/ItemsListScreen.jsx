@@ -21,24 +21,29 @@ export default function ItemsListScreen({ navigation }) {
 
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
-    const PAGE_SIZE = 5;
-
+    const PAGE_SIZE = 5;    const EXTRA = 1; // always fetch one extra item to detect further pages
     const { user } = useUserContext();
 
     const loadItems = useCallback(() => {
         setLoading(true);
         setError(null);
+        // calculate offset using only the page size, not the extra item
+        const offset = (page - 1) * PAGE_SIZE;
         axios
             .get(`${process.env.EXPO_PUBLIC_API_URL}/items`, {
                 params: {
-                    _page: page,
-                    _limit: PAGE_SIZE,
+                    _start: offset,
+                    _limit: PAGE_SIZE + EXTRA,
                 },
             })
             .then((response) => {
-                const fetched = response.data;
-                // if less than page size, no more
-                setHasMore(fetched.length === PAGE_SIZE);
+                let fetched = response.data;
+                if (fetched.length > PAGE_SIZE) {
+                    setHasMore(true);
+                    fetched = fetched.slice(0, PAGE_SIZE);
+                } else {
+                    setHasMore(false);
+                }
                 setItems(fetched);
             })
             .catch((err) => {
@@ -123,25 +128,27 @@ export default function ItemsListScreen({ navigation }) {
                             <Text style={styles.emptyText}>No items yet.</Text>
                         </View>
                     )}
-                    ListFooterComponent={() => (
-                        <View style={styles.pagination}>
-                            <TouchableOpacity
-                                disabled={page === 1}
-                                onPress={() => setPage((p) => Math.max(1, p - 1))}
-                                style={[styles.pageButton, page === 1 && styles.disabledButton]}
-                            >
-                                <Text style={styles.pageText}>Previous</Text>
-                            </TouchableOpacity>
-                            <Text style={styles.pageInfo}>Page {page}</Text>
-                            <TouchableOpacity
-                                disabled={!hasMore}
-                                onPress={() => setPage((p) => p + 1)}
-                                style={[styles.pageButton, !hasMore && styles.disabledButton]}
-                            >
-                                <Text style={styles.pageText}>Next</Text>
-                            </TouchableOpacity>
-                        </View>
-                    )}
+                    ListFooterComponent={
+                        (page > 1 || hasMore) ? () => (
+                            <View style={styles.pagination}>
+                                <TouchableOpacity
+                                    disabled={page === 1}
+                                    onPress={() => setPage((p) => Math.max(1, p - 1))}
+                                    style={[styles.pageButton, page === 1 && styles.disabledButton]}
+                                >
+                                    <Text style={styles.pageText}>Previous</Text>
+                                </TouchableOpacity>
+                                <Text style={styles.pageInfo}>Page {page}</Text>
+                                <TouchableOpacity
+                                    disabled={!hasMore}
+                                    onPress={() => setPage((p) => p + 1)}
+                                    style={[styles.pageButton, !hasMore && styles.disabledButton]}
+                                >
+                                    <Text style={styles.pageText}>Next</Text>
+                                </TouchableOpacity>
+                            </View>
+                        ) : null
+                    }
                 />
             )}
         </View>
