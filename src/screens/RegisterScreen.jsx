@@ -50,6 +50,7 @@ export default function RegisterScreen({
                     { text: 'OK', onPress: () => navigation.goBack() }
                 ]);
 
+                // console.log('Registration successful: ', response.data);
                 login(response.data.user, response.data.accessToken);
             })
             .catch(error => {

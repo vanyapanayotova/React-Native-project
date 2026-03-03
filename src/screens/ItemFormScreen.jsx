@@ -79,6 +79,7 @@ export default function ItemFormScreen({ route, navigation }) {
     };
 
     const onSubmit = async (data) => {
+        //console.log('onSubmit user: ', user);
         const itemData = {
             title: data.title,
             description: data.description,

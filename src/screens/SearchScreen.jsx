@@ -32,7 +32,7 @@ export default function SearchScreen({ navigation }) {
                 params: { q: query },
             })
             .then((res) => {
-                setResults(res.data);
+                setResults(res.data.data);
             })
             .catch((err) => {
                 console.error('Search failed', err);
