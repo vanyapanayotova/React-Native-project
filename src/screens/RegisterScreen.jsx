@@ -21,21 +21,26 @@ export default function RegisterScreen({
         formState: { errors, isSubmitting },
         watch,
     } = useForm({
-        defaultValues: { name: '', email: '', password: '', confirmPassword: '' },
+        defaultValues: { name: '', email: '', phone: '', password: '', confirmPassword: '' },
     });
 
     const passwordValue = watch('password');
 
     const registerHandler = (data) => {
-        const { name, email, password, confirmPassword } = data;
+        console.log('register data', data);
+        const { name, email, password, confirmPassword, phone } = data;
         if (password !== confirmPassword) {
             return Alert.alert('Password mismatch');
         }
-        axios.post(`${process.env.EXPO_PUBLIC_API_URL}/register`, {
+        const payload = {
             name,
             email,
             password,
-        })
+        };
+        if (phone) {
+            payload.phone = phone;
+        }
+        axios.post(`${process.env.EXPO_PUBLIC_API_URL}/register`, payload)
             .then(response => {
                 Alert.alert('Registration Successful', 'You are now registered and logged in.', [
                     { text: 'OK', onPress: () => navigation.goBack() }
@@ -85,6 +90,23 @@ export default function RegisterScreen({
                     />
                 )}
             />
+            {errors.email && <Text style={styles.errorText}>Valid email required</Text>}
+
+            <Controller
+                control={control}
+                name="phone"
+                rules={{ pattern: /^[0-9+\- ]{7,15}$/ }}
+                render={({ field: { onChange, value } }) => (
+                    <TextInput
+                        style={[styles.input, errors.phone && styles.invalid]}
+                        placeholder="Phone (optional)"
+                        value={value}
+                        onChangeText={onChange}
+                        keyboardType="phone-pad"
+                    />
+                )}
+            />
+            {errors.phone && <Text style={styles.errorText}>Phone format invalid</Text>}
             {errors.email && <Text style={styles.errorText}>Valid email required</Text>}
 
             <Controller

@@ -85,6 +85,7 @@ export default function ItemFormScreen({ route, navigation }) {
             price: parseFloat(data.price) || 0,
             userId: user.id,
             userName: user.name,
+            userPhone: user.phone || null,
             timestamp: item ? item.timestamp : new Date().toISOString(),
             imageUri,
         };

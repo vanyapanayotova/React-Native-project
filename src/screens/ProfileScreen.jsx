@@ -18,36 +18,12 @@ export default function ProfileScreen({ route }) {
         }
     }, [userId]);
 
-    const handleBiometricLogin = async () => {
-        const compatible = await LocalAuthentication.hasHardwareAsync();
-        if (!compatible) {
-            alert('Biometric authentication not available on this device');
-            return;
-        }
-        const enrolled = await LocalAuthentication.isEnrolledAsync();
-        if (!enrolled) {
-            alert('No biometrics enrolled');
-            return;
-        }
-        const result = await LocalAuthentication.authenticateAsync({
-            promptMessage: 'Authenticate',
-        });
-        if (result.success) {
-            alert('Biometric check passed');
-        } else {
-            alert('Authentication failed');
-        }
-    };
 
 
     return (
         <View style={styles.container}>
             <Text style={styles.name}>{profile?.name}</Text>
             <Text style={styles.email}>{profile?.email}</Text>
-
-            <TouchableOpacity style={styles.button} onPress={handleBiometricLogin}>
-                <Text style={styles.buttonText}>Test Biometric</Text>
-            </TouchableOpacity>
 
 
             <TouchableOpacity style={[styles.button, styles.logoutBtn]} onPress={logout}>

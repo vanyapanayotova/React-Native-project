@@ -47,6 +47,9 @@ export default function ItemDetailScreen({ route, navigation }) {
             <Text style={styles.description}>{currentItem.description}</Text>
             <View style={styles.footer}>
                 <Text style={styles.owner}>Posted by: {currentItem.userName}</Text>
+                {currentItem.userPhone && (
+                    <Text style={styles.phone}>Phone: {currentItem.userPhone}</Text>
+                )}
                 <Text style={styles.timestamp}>
                     {new Date(currentItem.timestamp).toLocaleString()}
                 </Text>
@@ -101,6 +104,11 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     owner: {
+        fontSize: 14,
+        color: '#666',
+        marginBottom: 4,
+    },
+    phone: {
         fontSize: 14,
         color: '#666',
         marginBottom: 4,
