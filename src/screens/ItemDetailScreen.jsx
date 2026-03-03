@@ -46,16 +46,7 @@ export default function ItemDetailScreen({ route, navigation }) {
             <Text style={styles.localPrice}>${currentItem.price.toFixed(2)}</Text>
             <Text style={styles.description}>{currentItem.description}</Text>
             <View style={styles.footer}>
-                <TouchableOpacity
-                    onPress={() =>
-                        navigation.navigate('Profile', {
-                            screen: 'ProfileHome',
-                            params: { userId: currentItem.userId },
-                        })
-                    }
-                >
-                    <Text style={[styles.owner, styles.link]}>Posted by: {currentItem.userName}</Text>
-                </TouchableOpacity>
+                <Text style={styles.owner}>Posted by: {currentItem.userName}</Text>
                 <Text style={styles.timestamp}>
                     {new Date(currentItem.timestamp).toLocaleString()}
                 </Text>
