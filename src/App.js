@@ -48,6 +48,20 @@ function ProfileStack() {
   );
 }
 
+// wrap the search tab content in its own stack so we can display a header
+function SearchStack() {
+  const Stack = createNativeStackNavigator();
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="SearchHome"
+        component={SearchScreen}
+        options={{ title: 'Search' }}
+      />
+    </Stack.Navigator>
+  );
+}
+
 const Tab = createBottomTabNavigator();
 
 export default function App() {
@@ -61,6 +75,7 @@ export default function App() {
             isAuthenticated ? (
               <Tab.Navigator
                 screenOptions={({ route }) => ({
+                  // hide headers on tabs; individual stacks can show their own
                   headerShown: false,
                   tabBarIcon: ({ color, size }) => {
                     let iconName;
@@ -78,7 +93,7 @@ export default function App() {
                 })}
               >
                 <Tab.Screen name="Marketplace" component={MarketplaceStack} />
-                <Tab.Screen name="Search" component={SearchScreen} />
+                <Tab.Screen name="Search" component={SearchStack} />
                 <Tab.Screen name="Profile" component={ProfileStack} />
               </Tab.Navigator>
             ) : (

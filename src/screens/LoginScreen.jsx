@@ -5,6 +5,9 @@ import {
     TextInput,
     TouchableOpacity,
     StyleSheet,
+    KeyboardAvoidingView,
+    ScrollView,
+    Platform,
 } from 'react-native';
 import { useUserContext } from '../contexts/user/UserContext';
 import axios from 'axios';
@@ -39,11 +42,18 @@ export default function LoginScreen({
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Marketplace</Text>
-            <Text style={styles.subtitle}>Login to continue</Text>
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+            <ScrollView
+                contentContainerStyle={styles.container}
+                keyboardShouldPersistTaps="handled"
+            >
+                <Text style={styles.title}>Marketplace</Text>
+                <Text style={styles.subtitle}>Login to continue</Text>
 
-            <Controller
+                <Controller
                 control={control}
                 name="email"
                 rules={{ required: true, pattern: /^[^@\s]+@[^@\s]+\.[^@\s]+$/ }}
@@ -90,7 +100,8 @@ export default function LoginScreen({
             >
                 <Text style={styles.linkText}>Don't have an account? Register</Text>
             </TouchableOpacity>
-        </View>
+        </ScrollView>
+        </KeyboardAvoidingView>
     );
 }
 

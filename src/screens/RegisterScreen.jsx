@@ -6,7 +6,10 @@ import {
     TextInput,
     TouchableOpacity,
     StyleSheet,
-    Alert
+    Alert,
+    KeyboardAvoidingView,
+    ScrollView,
+    Platform,
 } from 'react-native';
 import { useUserContext } from '../contexts/user/UserContext';
 import { useForm, Controller } from 'react-hook-form';
@@ -55,11 +58,18 @@ export default function RegisterScreen({
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Create Account</Text>
-            <Text style={styles.subtitle}>Join the Marketplace</Text>
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+            <ScrollView
+                contentContainerStyle={styles.container}
+                keyboardShouldPersistTaps="handled"
+            >
+                <Text style={styles.title}>Create Account</Text>
+                <Text style={styles.subtitle}>Join the Marketplace</Text>
 
-            <Controller
+                <Controller
                 control={control}
                 name="name"
                 rules={{ required: true }}
@@ -160,7 +170,8 @@ export default function RegisterScreen({
             >
                 <Text style={styles.linkText}>Already have an account? Login</Text>
             </TouchableOpacity>
-        </View>
+        </ScrollView>
+        </KeyboardAvoidingView>
     );
 }
 
