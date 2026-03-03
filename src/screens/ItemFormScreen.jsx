@@ -38,9 +38,6 @@ export default function ItemFormScreen({ route, navigation }) {
     });
 
     const [imageUri, setImageUri] = useState(item?.imageUri || null);
-    // removed date picker state
-
-    // removed availableUntil watch
 
     useEffect(() => {
         if (item) {
@@ -56,6 +53,7 @@ export default function ItemFormScreen({ route, navigation }) {
 
     const pickImage = async () => {
         console.log('pickImage invoked');
+        console.log(ImagePicker);
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         console.log('permission status', status);
         if (status !== 'granted') {
@@ -71,8 +69,10 @@ export default function ItemFormScreen({ route, navigation }) {
         // result schema varies by version:
         // { canceled: boolean, assets: [{ uri, ... }] } or { cancelled: boolean, uri }
         if (!result.canceled && result.assets && result.assets.length > 0) {
+            console.log('selected asset', result.assets[0]);
             setImageUri(result.assets[0].uri);
         } else if (!result.cancelled && result.uri) {
+            console.log('selected image', result.uri);
             // older versions
             setImageUri(result.uri);
         }
@@ -88,7 +88,7 @@ export default function ItemFormScreen({ route, navigation }) {
             //userName: user.name,
             //userPhone: user.phone || null,
             //timestamp: item ? item.timestamp : new Date().toISOString(),
-            //imageUri,
+            // image_uri: imageUri || null,
         };
 
         try {

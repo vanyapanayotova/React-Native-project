@@ -21,7 +21,7 @@ export default function ItemsListScreen({ navigation }) {
 
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
-    const PAGE_SIZE = 2;    const EXTRA = 1; // always fetch one extra item to detect further pages
+    const PAGE_SIZE = 5;    const EXTRA = 1; // always fetch one extra item to detect further pages
     const { user } = useUserContext();
 
     const loadItems = useCallback(() => {
