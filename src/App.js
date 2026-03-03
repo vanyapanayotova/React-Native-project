@@ -9,6 +9,7 @@ import ItemsListScreen from './screens/ItemsListScreen';
 import ItemDetailScreen from './screens/ItemDetailScreen';
 import ItemFormScreen from './screens/ItemFormScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import SearchScreen from './screens/SearchScreen';
 
 import UserProvider from './contexts/user/UserProvider';
 import { UserContext } from './contexts/user/UserContext';
@@ -65,6 +66,8 @@ export default function App() {
                     let iconName;
                     if (route.name === 'Marketplace') {
                       iconName = 'home-outline';
+                    } else if (route.name === 'Search') {
+                      iconName = 'search-outline';
                     } else if (route.name === 'Profile') {
                       iconName = 'person-outline';
                     }
@@ -75,6 +78,7 @@ export default function App() {
                 })}
               >
                 <Tab.Screen name="Marketplace" component={MarketplaceStack} />
+                <Tab.Screen name="Search" component={SearchScreen} />
                 <Tab.Screen name="Profile" component={ProfileStack} />
               </Tab.Navigator>
             ) : (
