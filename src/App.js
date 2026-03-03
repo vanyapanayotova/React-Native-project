@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import AuthNavigator from './navigation/AuthNavigator';
@@ -57,7 +58,22 @@ export default function App() {
         <UserContext.Consumer>
           {({ isAuthenticated }) =>
             isAuthenticated ? (
-              <Tab.Navigator screenOptions={{ headerShown: false }}>
+              <Tab.Navigator
+                screenOptions={({ route }) => ({
+                  headerShown: false,
+                  tabBarIcon: ({ color, size }) => {
+                    let iconName;
+                    if (route.name === 'Marketplace') {
+                      iconName = 'home-outline';
+                    } else if (route.name === 'Profile') {
+                      iconName = 'person-outline';
+                    }
+                    return <Ionicons name={iconName} size={size} color={color} />;
+                  },
+                  tabBarActiveTintColor: '#007AFF',
+                  tabBarInactiveTintColor: 'gray',
+                })}
+              >
                 <Tab.Screen name="Marketplace" component={MarketplaceStack} />
                 <Tab.Screen name="Profile" component={ProfileStack} />
               </Tab.Navigator>
