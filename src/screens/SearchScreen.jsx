@@ -28,7 +28,7 @@ export default function SearchScreen({ navigation }) {
         setLoading(true);
         setError(null);
         axios
-            .get(`${process.env.EXPO_PUBLIC_API_URL}/items`, {
+            .get(`${process.env.EXPO_PUBLIC_CUSTOM_API_URL}/items`, {
                 params: { q: query },
             })
             .then((res) => {

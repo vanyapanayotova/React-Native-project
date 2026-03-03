@@ -27,11 +27,12 @@ export default function LoginScreen({
 
     const loginHandler = (data) => {
         const { email, password } = data;
-        axios.post(`${process.env.EXPO_PUBLIC_API_URL}/login`, {
+        axios.post(`${process.env.EXPO_PUBLIC_CUSTOM_API_URL}/users/login`, {
             email,
             password,
         })
             .then(response => {
+                console.log('Login successful', response.data);
                 const { accessToken, user } = response.data;
                 login(user, accessToken);
             })

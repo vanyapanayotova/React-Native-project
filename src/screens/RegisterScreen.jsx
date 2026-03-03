@@ -43,7 +43,8 @@ export default function RegisterScreen({
         if (phone) {
             payload.phone = phone;
         }
-        axios.post(`${process.env.EXPO_PUBLIC_API_URL}/register`, payload)
+        // axios.post(`${process.env.EXPO_PUBLIC_CUSTOM_API_URL}/register`, payload)
+        axios.post(`${process.env.EXPO_PUBLIC_CUSTOM_API_URL}/users`, payload)
             .then(response => {
                 Alert.alert('Registration Successful', 'You are now registered and logged in.', [
                     { text: 'OK', onPress: () => navigation.goBack() }
@@ -52,6 +53,8 @@ export default function RegisterScreen({
                 login(response.data.user, response.data.accessToken);
             })
             .catch(error => {
+                console.log('payload: ', payload);
+                console.log('address: ', `${process.env.EXPO_PUBLIC_CUSTOM_API_URL}/users`);
                 console.error('Registration failed', error);
                 Alert.alert('Registration Failed', 'An error occurred during registration. Please try again.');
             });

@@ -11,7 +11,7 @@ export default function ItemCard({
     description,
     price,
     userName,
-    timestamp,
+    created_at,
     imageUri,
     isMyItem,
     onEdit,
@@ -19,6 +19,8 @@ export default function ItemCard({
 }) {
     const Container = onPress ? TouchableOpacity : View;
     const containerProps = onPress ? { onPress } : {};
+
+    console.log(created_at);
 
     return (
         <Container
@@ -46,7 +48,7 @@ export default function ItemCard({
             <Text style={styles.price}>${price}</Text>
             <View style={styles.footer}>
                 <Text style={styles.userName}>{userName}</Text>
-                <Text style={styles.timestamp}>{new Date(timestamp).toLocaleDateString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' })}</Text>
+                <Text style={styles.timestamp}>{new Date(created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</Text>
             </View>
         </Container>
     );

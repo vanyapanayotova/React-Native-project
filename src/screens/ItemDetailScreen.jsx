@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
     View,
     Text,
@@ -10,11 +10,48 @@ import {
 } from 'react-native';
 import { useUserContext } from '../contexts/user/UserContext';
 import axios from 'axios';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function ItemDetailScreen({ route, navigation }) {
     const { item } = route.params;
     const { user } = useUserContext();
-    const [currentItem, setCurrentItem] = useState(item);
+    const [currentItem, setCurrentItem] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        getItem();
+    }, []);
+
+    // to refresh when we come back to this screen after editing
+    useFocusEffect(
+        useCallback(() => {
+            let isActive = true;
+
+            const loadItem = async () => {
+                if (isActive) {
+                    await getItem();
+                }
+            };
+
+            loadItem();
+
+            return () => {
+                isActive = false;
+            };
+        }, [])
+    );
+
+    const getItem = () => {
+        axios
+            .get(`${process.env.EXPO_PUBLIC_CUSTOM_API_URL}/items/${item.id}`)
+            .then((res) => {
+                setCurrentItem(res.data.data); 
+                setLoading(false);   
+            })
+            .catch((err) => {
+                console.error('Failed to fetch item', err);
+            });
+    };
 
     const deleteHandler = () => {
         Alert.alert('Confirm Delete', 'Are you sure you want to delete this item?', [
@@ -24,7 +61,7 @@ export default function ItemDetailScreen({ route, navigation }) {
                 style: 'destructive',
                 onPress: () => {
                     axios
-                        .delete(`${process.env.EXPO_PUBLIC_API_URL}/items/${currentItem.id}`)
+                        .delete(`${process.env.EXPO_PUBLIC_CUSTOM_API_URL}/items/${currentItem.id}`)
                         .then(() => {
                             navigation.goBack();
                         })
@@ -37,13 +74,27 @@ export default function ItemDetailScreen({ route, navigation }) {
         ]);
     };
 
+
+
+    console.log('Item details:', currentItem);
+
+    if (loading) {
+        return <Text>  Loading...</Text>;
+    }
+
+    if (!currentItem) {
+        return <Text>No item found.</Text>;
+    }
+
     return (
         <ScrollView contentContainerStyle={styles.container}>
+            {loading && <Text>Loading...</Text>}
+
             {currentItem.imageUri && (
                 <Image source={{ uri: currentItem.imageUri }} style={styles.image} />
             )}
             <Text style={styles.title}>{currentItem.title}</Text>
-            <Text style={styles.localPrice}>${currentItem.price.toFixed(2)}</Text>
+            <Text style={styles.localPrice}>${currentItem.price}</Text>
             <Text style={styles.description}>{currentItem.description}</Text>
             <View style={styles.footer}>
                 <Text style={styles.owner}>Posted by: {currentItem.userName}</Text>
@@ -51,11 +102,11 @@ export default function ItemDetailScreen({ route, navigation }) {
                     <Text style={styles.phone}>Phone: {currentItem.userPhone}</Text>
                 )}
                 <Text style={styles.timestamp}>
-                    {new Date(currentItem.timestamp).toLocaleDateString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' })}
+                    {new Date(currentItem.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
                 </Text>
             </View>
 
-            {currentItem.userId === user.id && (
+            {currentItem.user_id === user.id && (
                 <View style={styles.actions}>
                     <TouchableOpacity
                         style={styles.actionButton}

@@ -21,7 +21,7 @@ export default function ItemsListScreen({ navigation }) {
 
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
-    const PAGE_SIZE = 5;    const EXTRA = 1; // always fetch one extra item to detect further pages
+    const PAGE_SIZE = 2;    const EXTRA = 1; // always fetch one extra item to detect further pages
     const { user } = useUserContext();
 
     const loadItems = useCallback(() => {
@@ -30,14 +30,15 @@ export default function ItemsListScreen({ navigation }) {
         // calculate offset using only the page size, not the extra item
         const offset = (page - 1) * PAGE_SIZE;
         axios
-            .get(`${process.env.EXPO_PUBLIC_API_URL}/items`, {
+            .get(`${process.env.EXPO_PUBLIC_CUSTOM_API_URL}/items`, {
                 params: {
                     _start: offset,
                     _limit: PAGE_SIZE + EXTRA,
                 },
             })
             .then((response) => {
-                let fetched = response.data;
+                let fetched = response.data.data;
+                console.log('Fetched items:', fetched);
                 if (fetched.length > PAGE_SIZE) {
                     setHasMore(true);
                     fetched = fetched.slice(0, PAGE_SIZE);
@@ -105,11 +106,11 @@ export default function ItemsListScreen({ navigation }) {
                     renderItem={({ item }) => (
                         <ItemCard
                             {...item}
-                            isMyItem={item.userId === user.id}
+                            isMyItem={item.user_id === user.id}
                             onEdit={() => navigation.navigate('ItemForm', { item })}
                             onDelete={() => {
                                 axios
-                                    .delete(`${process.env.EXPO_PUBLIC_API_URL}/items/${item.id}`)
+                                    .delete(`${process.env.EXPO_PUBLIC_CUSTOM_API_URL}/items/${item.id}`)
                                     .then(() => {
                                         setItems((prev) => prev.filter((i) => i.id !== item.id));
                                     })

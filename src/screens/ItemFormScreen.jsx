@@ -83,23 +83,24 @@ export default function ItemFormScreen({ route, navigation }) {
             title: data.title,
             description: data.description,
             price: parseFloat(data.price) || 0,
-            userId: user.id,
-            userName: user.name,
-            userPhone: user.phone || null,
-            timestamp: item ? item.timestamp : new Date().toISOString(),
-            imageUri,
+            user_id: user.id,
+            //userName: user.name,
+            //userPhone: user.phone || null,
+            //timestamp: item ? item.timestamp : new Date().toISOString(),
+            //imageUri,
         };
 
         try {
             let response;
             if (item) {
                 response = await axios.put(
-                    `${process.env.EXPO_PUBLIC_API_URL}/items/${item.id}`,
+                    `${process.env.EXPO_PUBLIC_CUSTOM_API_URL}/items/${item.id}`,
                     itemData
                 );
+                // navigation.navigate('ItemDetail', { item: response.data });
             } else {
                 response = await axios.post(
-                    `${process.env.EXPO_PUBLIC_API_URL}/items`,
+                    `${process.env.EXPO_PUBLIC_CUSTOM_API_URL}/items`,
                     itemData
                 );
             }

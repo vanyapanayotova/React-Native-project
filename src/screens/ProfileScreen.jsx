@@ -12,12 +12,17 @@ export default function ProfileScreen({ route }) {
     useEffect(() => {
         if (userId && userId !== user.id) {
             axios
-                .get(`${process.env.EXPO_PUBLIC_API_URL}/users/${userId}`)
-                .then((res) => setProfile(res.data))
-                .catch((err) => console.error('Failed to load profile', err));
+                .get(`${process.env.EXPO_PUBLIC_CUSTOM_API_URL}/users/${userId}`)
+                .then((res) => {
+                    console.log('Profile loaded', res.data);
+                    setProfile(res.data)
+                })
+                .catch((err) => {
+                    console.error('Failed to load profile', err);
+                    Alert.alert('Error', 'Unable to load profile');
+                });
         }
     }, [userId]);
-
 
 
     return (
