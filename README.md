@@ -73,7 +73,7 @@ Root Navigation Logic
 ---
 6. Data Source & Backend
 - Backend Type
- * Real backend hosted on Custom Apache hosting (https://kavdesign.net/sites/custom/public) with REST endpoints for auth (/login, /register) and items.
+ * Real backend hosted on Custom Apache hosting (https://kavdesign.net/sites/custom/public) with REST endpoints for auth (POST /users for registration, POST /users/login for login) and items endpoints.
 ---
 7. Data Operations (CRUD)
 - Read (GET)
