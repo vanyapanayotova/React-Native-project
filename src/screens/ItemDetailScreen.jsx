@@ -45,6 +45,7 @@ export default function ItemDetailScreen({ route, navigation }) {
         axios
             .get(`${process.env.EXPO_PUBLIC_CUSTOM_API_URL}/items/${item.id}`)
             .then((res) => {
+                // console.log('Item data:', JSON.stringify(res.data, null, 2));
                 setCurrentItem(res.data.data); 
                 setLoading(false);   
             })
@@ -88,8 +89,13 @@ export default function ItemDetailScreen({ route, navigation }) {
         <ScrollView contentContainerStyle={styles.container}>
             {loading && <Text>Loading...</Text>}
 
-            {currentItem.imageUri && (
-                <Image source={{ uri: currentItem.imageUri }} style={styles.image} />
+            {currentItem.images && currentItem.images.length > 0 && (
+                <Image
+                    source={{
+                        uri: `${process.env.EXPO_PUBLIC_CUSTOM_IMAGES_URL}${currentItem.images[0].url}`,
+                    }}
+                    style={styles.image}
+                />
             )}
             <Text style={styles.title}>{currentItem.title}</Text>
             <Text style={styles.localPrice}>${currentItem.price}</Text>

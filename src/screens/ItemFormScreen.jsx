@@ -78,31 +78,80 @@ export default function ItemFormScreen({ route, navigation }) {
         }
     };
 
+    // const onSubmit = async (data) => {
+    //     //console.log('onSubmit user: ', user);
+    //     const itemData = {
+    //         title: data.title,
+    //         description: data.description,
+    //         price: parseFloat(data.price) || 0,
+    //         user_id: user.id,
+    //         //userName: user.name,
+    //         //userPhone: user.phone || null,
+    //         //timestamp: item ? item.timestamp : new Date().toISOString(),
+    //         // image_uri: imageUri || null,
+    //     };
+
+    //     try {
+    //         let response;
+    //         if (item) {
+    //             response = await axios.put(
+    //                 `${process.env.EXPO_PUBLIC_CUSTOM_API_URL}/items/${item.id}`,
+    //                 itemData
+    //             );
+    //             // navigation.navigate('ItemDetail', { item: response.data });
+    //         } else {
+    //             response = await axios.post(
+    //                 `${process.env.EXPO_PUBLIC_CUSTOM_API_URL}/items`,
+    //                 itemData
+    //             );
+    //         }
+
+    //         navigation.goBack();
+    //     } catch (err) {
+    //         console.error('Failed to save item', err);
+    //         Alert.alert('Save error', 'Unable to save item.');
+    //     }
+    // };
+
+
     const onSubmit = async (data) => {
-        //console.log('onSubmit user: ', user);
-        const itemData = {
-            title: data.title,
-            description: data.description,
-            price: parseFloat(data.price) || 0,
-            user_id: user.id,
-            //userName: user.name,
-            //userPhone: user.phone || null,
-            //timestamp: item ? item.timestamp : new Date().toISOString(),
-            // image_uri: imageUri || null,
-        };
+        const formData = new FormData();
+
+        formData.append('title', data.title);
+        formData.append('description', data.description);
+        formData.append('price', parseFloat(data.price) || 0);
+        formData.append('user_id', user.id);
+
+        if (imageUri) {
+            formData.append('image', {
+                uri: imageUri,
+                name: 'photo.jpg',
+                type: 'image/jpeg',
+            });
+        }
 
         try {
             let response;
+
             if (item) {
                 response = await axios.put(
                     `${process.env.EXPO_PUBLIC_CUSTOM_API_URL}/items/${item.id}`,
-                    itemData
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    }
                 );
-                // navigation.navigate('ItemDetail', { item: response.data });
             } else {
                 response = await axios.post(
                     `${process.env.EXPO_PUBLIC_CUSTOM_API_URL}/items`,
-                    itemData
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    }
                 );
             }
 
