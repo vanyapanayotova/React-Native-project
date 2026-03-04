@@ -16,11 +16,13 @@ export default function ItemCard({
     isMyItem,
     onEdit,
     onPress,
+    images
 }) {
     const Container = onPress ? TouchableOpacity : View;
     const containerProps = onPress ? { onPress } : {};
 
     console.log(created_at);
+    console.log(images);
 
     return (
         <Container
@@ -30,7 +32,16 @@ export default function ItemCard({
             ]}
             {...containerProps}
         >
-            {imageUri && <Image source={{ uri: imageUri }} style={styles.cardImage} />}
+            {/* {imageUri && <Image source={{ uri: imageUri }} style={styles.cardImage} />} */}
+            {images && images.length > 0 && (
+                <Image
+                    source={{
+                        uri: `${process.env.EXPO_PUBLIC_CUSTOM_IMAGES_URL}${images[0].url}`,
+                    }}
+                    style={styles.cardImage}
+                />
+            )}
+            
             <View style={styles.header}>
                 <Text style={styles.title}>{title}</Text>
                 {isMyItem && (

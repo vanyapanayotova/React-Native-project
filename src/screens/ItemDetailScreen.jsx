@@ -75,7 +75,7 @@ export default function ItemDetailScreen({ route, navigation }) {
         ]);
     };
 
-    // console.log('Item details:', currentItem);
+    console.log('Item details:', currentItem);
 
     if (loading) {
         return <Text>  Loading...</Text>;
