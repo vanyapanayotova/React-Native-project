@@ -130,18 +130,21 @@ export default function ItemFormScreen({ route, navigation }) {
             });
         }
 
+        console.log('onSubmit', formData);
+
         try {
             let response;
 
             if (item) {
                 response = await axios.put(
                     `${process.env.EXPO_PUBLIC_CUSTOM_API_URL}/items/${item.id}`,
-                    formData,
                     {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                        },
+                        title: data.title,
+                        description: data.description,
+                        price: parseFloat(data.price) || 0,
+                        user_id: user.id,
                     }
+                    //todo - edit photo
                 );
             } else {
                 response = await axios.post(
@@ -154,7 +157,7 @@ export default function ItemFormScreen({ route, navigation }) {
                     }
                 );
             }
-
+            console.log('Item saved successfully', response.data);
             navigation.goBack();
         } catch (err) {
             console.error('Failed to save item', err);
@@ -215,11 +218,12 @@ export default function ItemFormScreen({ route, navigation }) {
             />
             {errors.price && <Text style={styles.errorText}>Valid price required.</Text>}
 
-
-
-            <TouchableOpacity style={styles.imageButton} onPress={pickImage}>
-                <Text style={styles.imageButtonText}>{imageUri ? 'Change Photo' : 'Pick Photo'}</Text>
-            </TouchableOpacity>
+            {/* Only show image picker if item does NOT exist (i.e., creating new) */}
+            {!item && (
+                <TouchableOpacity style={styles.imageButton} onPress={pickImage}>
+                    <Text style={styles.imageButtonText}>{imageUri ? 'Change Photo' : 'Pick Photo'}</Text>
+                </TouchableOpacity>
+            )}
             {imageUri && <Image source={{ uri: imageUri }} style={styles.preview} />}
 
             <TouchableOpacity

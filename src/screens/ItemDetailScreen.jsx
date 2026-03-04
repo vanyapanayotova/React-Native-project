@@ -110,7 +110,7 @@ export default function ItemDetailScreen({ route, navigation }) {
                 </Text>
             </View>
 
-            {currentItem.user_id === user.id && (
+            {currentItem.user.id === user.id && (
                 <View style={styles.actions}>
                     <TouchableOpacity
                         style={styles.actionButton}

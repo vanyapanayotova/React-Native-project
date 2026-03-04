@@ -106,7 +106,7 @@ export default function ItemsListScreen({ navigation }) {
                     renderItem={({ item }) => (
                         <ItemCard
                             {...item}
-                            isMyItem={item.user_id === user.id}
+                            isMyItem={item.user.id === user.id}
                             onEdit={() => navigation.navigate('ItemForm', { item })}
                             onDelete={() => {
                                 axios

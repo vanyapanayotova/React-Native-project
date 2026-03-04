@@ -9,9 +9,9 @@ https://example.com/Marketplace-release.apk
 2. Launch the app and register or login.
 3. Browse the marketplace tab – pull down to refresh the list.
 4. Tap an item to see details; owner name opens profile.
-5. Use the "+ New" button to publish an item (choose photo, set price, mark featured, pick expiration date).
+5. Use the "+ New" button to publish an item (choose photo, set price).
 6. Edit or delete your own entries from the detail screen or directly in the list.
-7. Visit the Profile tab to view your information, try biometric check or logout.
+7. Visit the Profile tab to view your information, try logout.
 
 ## Installation Guide
 **Prerequisites**
@@ -28,7 +28,7 @@ https://example.com/Marketplace-release.apk
 
 **Building APK**
 1. `npm run build:apk` (requires Android SDK).
-2. Locate generated .apk under ndroid/app/build/outputs/apk/release and upload to repository.
+2. Locate generated .apk under android/app/build/outputs/apk/release and upload to repository.
 
 ## Functional Guide
 1. Project Overview
@@ -58,7 +58,7 @@ https://example.com/Marketplace-release.apk
 Root Navigation Logic
 * Navigation is split by authentication status: unauthenticated users see AuthNavigator (stack) while logged-in users see a bottom tab navigator.
 - Main Navigation
- - Two tabs: **Marketplace** and **Profile**.
+ - Two tabs: **Marketplace**, **Search** and **Profile**.
 - Nested Navigation
  * **Marketplace** tab contains a stack with List, Detail and Form screens.
  * **Profile** tab contains its own stack (currently one screen, but can show any profile by ID).
@@ -73,7 +73,7 @@ Root Navigation Logic
 ---
 6. Data Source & Backend
 - Backend Type
- * Real backend hosted on Render (https://vanyas-react-native-marketplace-2026.onrender.com) with REST endpoints for auth (/login, /register) and items.
+ * Real backend hosted on Custom Apache hosting (https://kavdesign.net/sites/custom/public) with REST endpoints for auth (/login, /register) and items.
 ---
 7. Data Operations (CRUD)
 - Read (GET)
@@ -104,8 +104,7 @@ Root Navigation Logic
 - description (item): required + min length 10
 ---
 10. Native Device Features
-- **Image Picker** (via expo-image-picker): users choose a photo when creating/editing an item; preview shown.
-- **Biometrics** (via expo-local-authentication): profile screen includes a button to test fingerprint/FaceID.
+- **Image Picker** (via expo-image-picker): users choose a photo when creating an item; preview shown.
 
 11. Typical User Flow
 1. Open app; if previously logged in auto‑navigates to main tabs.
