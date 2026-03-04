@@ -2,7 +2,7 @@
 React Native Course Project 
 
 ## Link to APK
-https://example.com/Marketplace-release.apk
+http://kavdesign.net/sites/vanya-react-native-marketplace-app.apk
 
 ## Walkthrough Tutorial (optional)
 1. Install the app (see installation guide).

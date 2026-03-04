@@ -21,7 +21,10 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.ipapazov.x07ReactNativeStateManagementandDataPersistence"
+      "package": "com.ipapazov.x07ReactNativeStateManagementandDataPersistence",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -39,7 +42,13 @@
         {
           "photosPermission": "Allow access to your photos"
         }
-      ]
-    ]
+      ],
+      "@react-native-community/datetimepicker"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "7259abba-a582-4da9-b6c5-cd5bda64f636"
+      }
+    }
   }
 }
